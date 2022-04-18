@@ -4,16 +4,16 @@ function Get-AppDataFromLog {
         [System.IO.FileInfo]$IMEAgentLogFile = $(Join-Path $env:ProgramData "Microsoft\IntuneManagementExtension\Logs\IntuneManagementExtension.log")
     )
     try {
-        $results = [System.Collections.ArrayList]::new()
+        $results = [IntuneApps]::new()
         $logData = Get-Content $IMEAgentLogFile
-        #$logMatches = Select-String -Path $IMEAgentLogFile -Pattern '\<\!\[LOG\[Get content info from service,ret = {' -AllMatches
-        $logMatches = Select-String -Path $IMEAgentLogFile -Pattern '\<\!\[LOG\[\[Win32App\] Got result with session id [a-fA-F0-9]{8}[-]?([a-fA-F0-9]{4}[-]?){3}[a-fA-F0-9]{12}. Result: {' -AllMatches
+        $logMatches = Select-String -Path $IMEAgentLogFile -Pattern '\<\!\[LOG\[Response from Intune = {' -AllMatches
         $foundApps = foreach ($app in $logMatches) {
             $reply = "{$($logData[$app.LineNumber].ToString().TrimStart())}" | ConvertFrom-Json
+            if ($reply.ResponseContentType -ne 'GetContentInfo') { continue }
             $responsePayload = $reply.ResponsePayload | ConvertFrom-Json
             $contentInfo = $responsePayload.ContentInfo | ConvertFrom-Json
             $decryptInfo = ConvertFrom-EncryptedBase64 -B64String ([xml]$responsePayload.DecryptInfo).EncryptedMessage.EncryptedContent | ConvertFrom-Json
-            [IntuneApp]::new($contentInfo, $decryptInfo)
+            $results.Add($responsePayload.ApplicationId, $contentInfo, $decryptInfo)
         }
         if ($foundApps.count -gt 0) {
             Write-Host "Found $($foundApps.Count) applications in logfile.." -ForegroundColor Green
