@@ -1,7 +1,7 @@
 ﻿[cmdletbinding()]
 param (
-    [parameter(Mandatory = $true)]
-    [System.IO.FileInfo]$modulePath,
+    [parameter(Mandatory = $false)]
+    [System.IO.FileInfo]$modulePath = "$PSScriptRoot\Intune.Application.Tools",
 
     [parameter(Mandatory = $false)]
     [switch]$buildLocal
