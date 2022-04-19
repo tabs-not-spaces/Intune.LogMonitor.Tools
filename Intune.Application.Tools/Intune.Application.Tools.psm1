@@ -1,8 +1,10 @@
 using module 'classes\IntuneApp.psm1'
 
+$script:ModuleRoot = $PSScriptRoot
+
 #region Get public and private function definition files.
-$Public  = @(Get-ChildItem -Path $PSScriptRoot\Public\*.ps1 -ErrorAction SilentlyContinue)
-$Private = @(Get-ChildItem -Path $PSScriptRoot\Private\*.ps1 -ErrorAction SilentlyContinue)
+$Public  = @(Get-ChildItem -Path $script:ModuleRoot\Public\*.ps1 -ErrorAction SilentlyContinue)
+$Private = @(Get-ChildItem -Path $script:ModuleRoot\Private\*.ps1 -ErrorAction SilentlyContinue)
 #endregion
 #region Dot source the files
 foreach ($import in @($Public + $Private))

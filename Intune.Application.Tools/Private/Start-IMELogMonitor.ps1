@@ -7,19 +7,22 @@ function Start-IMELogMonitor {
         [parameter(Mandatory = $false)]
         [System.IO.FileInfo]$OutputFolder = $env:temp
     )
-    $moduleRoot = Split-Path $PSScriptRoot -Parent
-    $init = [scriptblock]::Create('
-        using module "{0}\Classes\IntuneApp.psm1"
-        $privateFunctions = @(Get-ChildItem "{0}\private\*.ps1" -ErrorAction SilentlyContinue)
-        foreach ($import in $privateFunctions) {
-            try {
-                . $import.fullName
-            }
-            catch {
-                Write-Error -Message "Failed to import function $($import.FullName): $_"
-            }
-        }
-    ' -f $moduleRoot)
+    #region Initialization script
+    $initScriptBlock = @"
+using module "$($script:ModuleRoot)\Classes\IntuneApp.psm1"
+`$privateFunctions = @(Get-ChildItem "$($script:ModuleRoot)\private\*.ps1" -ErrorAction SilentlyContinue)
+foreach (`$import in `$privateFunctions) {
+    try {
+        . `$import.fullName
+    }
+    catch {
+        Write-Error -Message "Failed to import function `$(`$import.FullName): $_"
+    }
+}
+"@
+    $init = [scriptblock]::Create($initScriptBlock)
+    #endregion
+    #region IMELogMonitor scriptblock
     $logWatcher = {
         param($IMEAgentLogFile)
         Register-EngineEvent -SourceIdentifier "Intune.Application.Tools" -Action {
@@ -45,5 +48,7 @@ function Start-IMELogMonitor {
             }
         }
     }
+    #endregion
+    
     Start-Job -Name "IMELogMonitor" -ScriptBlock $logWatcher -InitializationScript $init -ArgumentList $IMEAgentLogFile
 }
