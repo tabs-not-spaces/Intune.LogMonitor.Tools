@@ -10,8 +10,36 @@ function Get-IntuneApplicationsFromLogFile {
         [switch]$RunAsBackgroundTask
     )
     try {
+        Set-IMELogLevel -LogLevel "Verbose"
         if ($RunAsBackgroundTask) {
-            Start-IMELogMonitor
+            Register-EngineEvent -SourceIdentifier "Intune.Application.Tools" -Action {
+                #region Process the found applications.
+                Start-Transcript -Path "D:\bin\logfile.txt" -Force
+                $app = $event.MessageData
+                Write-Host "Processing found app: $($app.applicationId)"
+                $appOutput = "$($OutputFolder.FullName)\$($app.ApplicationId)"
+                Write-Host "Will download media and dump to $appOutput.."
+                Invoke-FileDownload -Url $($app.Url) -Path "$appOutput\$($app.BinFileName)" -Verbose
+                Expand-Intunewin -InputFile "$appOutput\$($app.BinFileName)" -OutputFolder $appOutput -EncKey $app.Key -EncIV $app.IV -Verbose
+                Stop-Transcript
+                #endregion
+            } | Out-Null
+            [IntuneApps]$intuneApplications = [IntuneApps]::new()
+            Get-Content $IMEAgentLogFile -Wait | 
+            Select-String -Pattern '\<\!\[LOG\[Response from Intune = {' -AllMatches | 
+            Where-Object { $_ -ne $null } |
+            ForEach-Object -ErrorAction SilentlyContinue {
+                #if ($(Get-IMELogLevel) -eq 'Information') { Continue }
+                $logData = Get-Content $IMEAgentLogFile
+                $app = $_
+                $reply = "{$($logData[$app.LineNumber].ToString().TrimStart())}" | ConvertFrom-Json
+                if ($reply.ResponseContentType -eq 'GetContentInfo') { 
+                    $responsePayload = $reply.ResponsePayload | ConvertFrom-Json
+                    $contentInfo = $responsePayload.ContentInfo | ConvertFrom-Json
+                    $decryptInfo = ConvertFrom-EncryptedBase64 -B64String ([xml]$responsePayload.DecryptInfo).EncryptedMessage.EncryptedContent | ConvertFrom-Json
+                    $intuneApplications.Add($responsePayload.ApplicationId, $contentInfo, $decryptInfo)
+                }
+            }
         }
         else {
             [IntuneApps]$foundApps = [IntuneApps]::New()

@@ -9,11 +9,11 @@ function Set-IMELogLevel {
     $imeConfigPath = "$(${env:ProgramFiles(x86)})\Microsoft Intune Management Extension\Microsoft.Management.Services.IntuneWindowsAgent.exe.config"
 
     try {
-        [xml]$imeConfig = New-Object xml
-        $imeConfig.Load($imeConfigPath)
-        [string]$currentLogLevel = $imeConfig.configuration.'system.diagnostics'.sources.source.switchValue
+        [string]$currentLogLevel = Get-IMELogLevel
         if (!($currentLogLevel -eq $LogLevel)) {
             Write-Verbose "Setting log level from $currentLogLevel to $LogLevel"
+            [xml]$imeConfig = New-Object xml
+            $imeConfig.Load($imeConfigPath)
             $imeConfig.configuration.'system.diagnostics'.sources.source.switchValue = $LogLevel
             $imeConfig.Save($imeConfigPath)
             Restart-Service -Name IntuneManagementExtension

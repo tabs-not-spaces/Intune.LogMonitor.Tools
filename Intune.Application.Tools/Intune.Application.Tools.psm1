@@ -1,6 +1,7 @@
 using module 'classes\IntuneApp.psm1'
 
 $script:ModuleRoot = $PSScriptRoot
+$script:Alert = Get-ChildItem -Path $script:ModuleRoot\Bin\Alert.mp3
 
 #region Get public and private function definition files.
 $Public  = @(Get-ChildItem -Path $script:ModuleRoot\Public\*.ps1 -ErrorAction SilentlyContinue)

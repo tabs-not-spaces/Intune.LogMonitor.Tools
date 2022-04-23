@@ -17,6 +17,10 @@ function Invoke-FileDownload {
         $Path = "./$($URLParser.Matches.Groups[1].Value)"
     }
 
+    if (!(Test-Path $Path -ErrorAction SilentlyContinue)) {
+        New-Item -Path $(Split-Path $Path -Parent) -ItemType Directory -Force | Out-Null
+    }
+
     Write-Verbose "Path set to ""$($Path)""."
 
     #Load in the WebClient object.
