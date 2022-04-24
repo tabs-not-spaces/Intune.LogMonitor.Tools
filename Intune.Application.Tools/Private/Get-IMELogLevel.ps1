@@ -8,7 +8,7 @@ function Get-IMELogLevel {
     try {
         [xml]$imeConfig = New-Object xml
         $imeConfig.Load($IWAConfigFile)
-        return $imeConfig.configuration.'system.diagnostics'.sources.source
+        return $imeConfig.configuration.'system.diagnostics'.sources.source.switchValue
     }
     catch {
         Write-Warning $_.Exception.Message
