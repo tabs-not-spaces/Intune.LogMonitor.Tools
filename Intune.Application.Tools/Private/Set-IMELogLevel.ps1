@@ -16,7 +16,8 @@ function Set-IMELogLevel {
             $imeConfig.Load($imeConfigPath)
             $imeConfig.configuration.'system.diagnostics'.sources.source.switchValue = $LogLevel
             $imeConfig.Save($imeConfigPath)
-            Restart-Service -Name IntuneManagementExtension
+            Write-Verbose "Restarting IME service.."
+            Restart-Service -Name IntuneManagementExtension | Out-Null
         }
         else {
             Write-Verbose "Log level is already set to $LogLevel. No changes have been applied."

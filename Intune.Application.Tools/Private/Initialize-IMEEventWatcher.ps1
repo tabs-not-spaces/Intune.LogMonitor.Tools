@@ -18,9 +18,9 @@ function Initialize-IMEEventWatcher {
             }
         }
         $app = $event.MessageData
-        Write-Host "Processing found app: $($app.applicationId)"
+        Write-Host "`nDetected applications: $($app.applicationId)" -ForegroundColor Green
         $appOutput = $app.DownloadPath
-        Write-Host "Will download media and dump to $appOutput.."
+        Write-Host "Processing encrypted binaries to: $appOutput.." -ForegroundColor Cyan
         Start-GuilfoylAlert
         $ifdParams = @{
             Url  = $app.Url
