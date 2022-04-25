@@ -1,12 +1,16 @@
 class IntuneApp {
-    $ApplicationId
-    $Url
-    $Key
-    $IV
-    $BinFileName
-    $DownloadPath
+    [string]$ApplicationId
+    [string]$Url
+    [string]$Key
+    [string]$IV
+    [string]$BinFileName
+    [system.io.FileInfo]$DownloadPath
 
-    IntuneApp([string]$ApplicationId, [PSCustomObject]$contentInfo, [PSCustomObject]$decryptInfo, [system.io.FileInfo]$downloadPath) {
+    IntuneApp( [string]$ApplicationId, 
+        [PSCustomObject]$contentInfo, 
+        [PSCustomObject]$decryptInfo, 
+        [system.io.FileInfo]$downloadPath ) {
+
         $this.ApplicationId = $applicationId
         $this.Url = $contentInfo.UploadLocation
         $this.Key = $decryptInfo.EncryptionKey
@@ -21,7 +25,10 @@ class IntuneApps {
     IntuneApps() {
         $this.applications = [System.Collections.ArrayList]::new()
     }
-    Add([string]$applicationId, [PSCustomObject]$contentInfo, [PSCustomObject]$decryptInfo, [system.io.FileInfo]$downloadPath) {
+    Add( [string]$applicationId, 
+        [PSCustomObject]$contentInfo, 
+        [PSCustomObject]$decryptInfo, 
+        [system.io.FileInfo]$downloadPath ) {
         if ($applicationId -notin $this.applications.ApplicationId) {
             $intuneApp = [IntuneApp]::new($applicationId, $contentInfo, $decryptInfo, $downloadPath)
             $this.applications.Add($intuneApp)

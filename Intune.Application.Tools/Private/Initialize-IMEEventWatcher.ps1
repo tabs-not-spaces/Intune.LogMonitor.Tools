@@ -3,6 +3,7 @@ function Initialize-IMEEventWatcher {
     param()
     Register-EngineEvent -SourceIdentifier "Intune.Application.Tools" -Action {
         $script:ModuleRoot = Split-Path $PSScriptRoot -Parent
+        $script:tick = [char]0x221a
         [system.uri]$script:Alert = "$script:ModuleRoot\Media\Alert.mp3"
 
         #region Get public and private function definition files.
@@ -17,22 +18,40 @@ function Initialize-IMEEventWatcher {
                 Write-Error -Message "Failed to import function $($import.FullName): $_"
             }
         }
-        $app = $event.MessageData
-        Write-Host "`nDetected applications: $($app.applicationId)" -ForegroundColor Green
-        $appOutput = $app.DownloadPath
-        Write-Host "Processing encrypted binaries to: $appOutput.." -ForegroundColor Cyan
-        Start-GuilfoylAlert
-        $ifdParams = @{
-            Url  = $app.Url
-            Path = "$appOutput\$($app.BinFileName)"
+        try {
+            $app = $event.MessageData
+            Write-Host "`nApplication found: " -NoNewline
+            Write-Host "$($app.applicationId)" -ForegroundColor Green
+            $appOutput = $app.DownloadPath
+            Write-Host "Processing encrypted binaries: " -NoNewline
+            Start-GuilfoylAlert
+            $ifdParams = @{
+                Url  = $app.Url
+                Path = "$appOutput\$($app.BinFileName)"
+            }
+            Invoke-FileDownload @ifdParams
+            $eiParams = @{
+                InputFile    = "$appOutput\$($app.BinFileName)"
+                OutputFolder = $appOutput
+                EncKey       = $app.Key
+                EncIV        = $app.IV
+            }
+            Expand-Intunewin @eiParams
         }
-        Invoke-FileDownload @ifdParams
-        $eiParams = @{
-            InputFile    = "$appOutput\$($app.BinFileName)"
-            OutputFolder = $appOutput
-            EncKey       = $app.Key
-            EncIV        = $app.IV
+        catch {
+            $errorMsg = $_
         }
-        Expand-Intunewin @eiParams
+        finally {
+            if ($errorMsg) {
+                Write-Host "X" -ForegroundColor Red
+                Write-Warning $errorMsg.Exception.Message
+            }
+            else {
+                Write-Host $script:tick -ForegroundColor Green
+                Write-Host "App payload decrypted to: " -NoNewline
+                Write-Host "$appOutput`n" -ForegroundColor Green
+                Write-Host "---`n"
+            }
+        }
     } | Out-Null
 }
