@@ -10,7 +10,7 @@ function Start-IMEAppMonitor {
 
     try {
         Set-IMELogLevel -LogLevel "Verbose"
-        [IntuneApps]$intuneApplications = [IntuneApps]::new()
+        [IntuneApps]$script:intuneApplications = [IntuneApps]::new()
         Initialize-IMEEventWatcher
 
         Write-Host "Monitoring IME log for applications.." -ForegroundColor Yellow
@@ -23,7 +23,7 @@ function Start-IMEAppMonitor {
     }
     Finally {
         Write-Verbose "Shutting everything down.."
-        #Set-IMELogLevel -LogLevel "Information"
+        Set-IMELogLevel -LogLevel "Information"
         Get-EventSubscriber -SourceIdentifier "Intune.Application.Tools" | Unregister-Event
         Get-Job -Name "Intune.Application.Tools" | Remove-Job
     }

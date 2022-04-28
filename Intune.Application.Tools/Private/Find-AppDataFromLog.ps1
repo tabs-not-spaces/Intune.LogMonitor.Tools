@@ -19,7 +19,7 @@ function Find-AppDataFromLog {
                         $responsePayload = $reply.ResponsePayload | ConvertFrom-Json
                         $contentInfo = $responsePayload.ContentInfo | ConvertFrom-Json
                         $decryptInfo = ConvertFrom-EncryptedBase64 -B64String ([xml]$responsePayload.DecryptInfo).EncryptedMessage.EncryptedContent | ConvertFrom-Json
-                        $intuneApplications.Add($responsePayload.ApplicationId, $contentInfo, $decryptInfo, $OutputFolder)
+                        $script:intuneApplications.Add($responsePayload.ApplicationId, $contentInfo, $decryptInfo, $OutputFolder)
                     }
                 }
             }
