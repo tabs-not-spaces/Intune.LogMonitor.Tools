@@ -5,10 +5,14 @@ function Find-AppDataFromLog {
         [System.Io.FileInfo]$IMEAgentLogFile = $(Join-Path $env:ProgramData "Microsoft\IntuneManagementExtension\Logs\IntuneManagementExtension.log"),
 
         [parameter(Mandatory = $false)]
-        [System.IO.FileInfo]$OutputFolder = "$env:temp"
+        [System.IO.FileInfo]$OutputFolder = "$env:temp",
+
+        [parameter(Mandatory = $false)]
+        [switch]$RunOnce
     )
     try {
-        while ($true) {
+        $stayInLoop = $true
+        while ($stayInLoop) {
             $logData = Get-Content $IMEAgentLogFile
             $filteredLog = $logData |
             Select-String -Pattern '\<\!\[LOG\[Response from Intune = {' -AllMatches
@@ -23,6 +27,7 @@ function Find-AppDataFromLog {
                     }
                 }
             }
+            $stayInLoop = $RunOnce
         }
     }
     catch [System.Exception] {

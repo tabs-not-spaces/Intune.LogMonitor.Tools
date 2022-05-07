@@ -5,9 +5,11 @@ param (
 $excludeRule = @(
     "PSAvoidUsingWriteHost",
     "PSAvoidUsingConvertToSecureStringWithPlainText",
-    "PSAvoidUsingPositionalParameters"
+    "PSAvoidUsingPositionalParameters",
+    "PSAvoidTrailingWhitespace"
 )
 $fp = Split-Path $PSScriptRoot -Parent
+$env:MODULENAME = "Intune.LogMonitor.Tools"
 if (Test-Path $fp\localenv.ps1 -ErrorAction SilentlyContinue) {
     . $fp\localenv.ps1
 }
