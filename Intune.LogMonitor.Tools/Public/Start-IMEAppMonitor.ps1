@@ -24,7 +24,7 @@ function Start-IMEAppMonitor {
     Finally {
         Write-Verbose "Shutting everything down.."
         Set-IMELogLevel -LogLevel "Information"
-        Get-EventSubscriber -SourceIdentifier "Intune.Application.Tools" | Unregister-Event
-        Get-Job -Name "Intune.Application.Tools" | Remove-Job
+        Get-EventSubscriber -SourceIdentifier "IME.AppFound" | Unregister-Event
+        Get-Job -Name "IME.AppFound" | Remove-Job
     }
 }

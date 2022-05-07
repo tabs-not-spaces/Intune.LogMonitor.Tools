@@ -1,7 +1,7 @@
 ﻿[cmdletbinding()]
 param (
     [parameter(Mandatory = $false)]
-    [System.IO.FileInfo]$modulePath = "$PSScriptRoot\Intune.Application.Tools",
+    [System.IO.FileInfo]$modulePath = "$PSScriptRoot\Intune.LogMonitor.Tools",
 
     [parameter(Mandatory = $false)]
     [switch]$buildLocal
