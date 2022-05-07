@@ -24,7 +24,6 @@ function Initialize-IMEEventWatcher {
             Write-Host "$($app.applicationId)" -ForegroundColor Green
             $appOutput = $app.DownloadPath
             Write-Host "Processing encrypted binaries: " -NoNewline
-            Start-GuilfoylAlert
             $ifdParams = @{
                 Url  = $app.Url
                 Path = "$appOutput\$($app.BinFileName)"

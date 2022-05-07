@@ -1,5 +1,6 @@
 function Convert-FileSize {
     [cmdletbinding()]
+    [OutputType([System.String])]
     param(
         [double]$bytes
     )

@@ -1,6 +1,6 @@
 #Requires -RunAsAdministrator
 function Set-IMELogLevel {
-    [cmdletbinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         [parameter(Mandatory = $false)]
         [ValidateSet("Information", "Verbose")]
