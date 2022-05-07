@@ -32,7 +32,7 @@ class IntuneApps {
         if ($applicationId -notin $this.applications.ApplicationId) {
             $intuneApp = [IntuneApp]::new($applicationId, $contentInfo, $decryptInfo, $downloadPath)
             $this.applications.Add($intuneApp)
-            New-Event -SourceIdentifier 'Intune.Application.Tools' -MessageData $intuneApp
+            New-Event -SourceIdentifier 'IME.AppFound' -MessageData $intuneApp
         }
     }
 }

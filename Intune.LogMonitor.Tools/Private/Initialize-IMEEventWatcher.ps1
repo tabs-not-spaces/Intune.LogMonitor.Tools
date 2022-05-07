@@ -1,7 +1,7 @@
 function Initialize-IMEEventWatcher {
     [cmdletbinding()]
     param()
-    Register-EngineEvent -SourceIdentifier "Intune.Application.Tools" -Action {
+    Register-EngineEvent -SourceIdentifier "IME.AppFound" -Action {
         $script:ModuleRoot = Split-Path $PSScriptRoot -Parent
         $script:tick = [char]0x221a
         [system.uri]$script:Alert = "$script:ModuleRoot\Media\Alert.mp3"
