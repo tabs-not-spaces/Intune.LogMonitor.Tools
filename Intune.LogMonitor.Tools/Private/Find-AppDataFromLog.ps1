@@ -27,7 +27,7 @@ function Find-AppDataFromLog {
                     }
                 }
             }
-            $stayInLoop = $RunOnce
+            $stayInLoop = !$RunOnce
         }
     }
     catch [System.Exception] {
