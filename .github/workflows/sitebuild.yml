@@ -1,0 +1,13 @@
+name: Build, Test & Deploy
+on:
+  push:
+    branches: main
+    paths-ignore:
+      - '/.gitignore'
+      - '/readme.md'
+      - '/.tests'
+  workflow_dispatch:
+  
+  jobs:
+    build-and-deploy:
+  
