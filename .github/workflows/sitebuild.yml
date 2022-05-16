@@ -8,29 +8,29 @@ on:
       - '/.tests'
   workflow_dispatch:
   
-  jobs:
-    build-and-deploy:
-      runs-on: windows-2019
-      if: "!contains(github.event.head_commit.message, 'ci-skip')"
-      steps:
-        - name: checkout 🛎️
-          uses: actions/checkout@v2
-          with:
-            persist-credentials: false
-        
-        - name: pre-build
-          shell: pwsh
-          run: |
-            Install-Module -Name Pester -MaximumVersion 4.10.1 -Verbose -Scope CurrentUser -SkipPublisherCheck -Force
-            Install-Module PSScriptAnalyzer -Scope CurrentUser -SkipPublisherCheck -ErrorAction SilentlyContinue -Force
-            Install-Module 7zip4PowerShell -Scope CurrentUser -SkipPublisherCheck -ErrorAction SIlentlyContinue -Force
-            
-        - name: build
-          shell: pwsh
-          run: |
-            ./build.ps1
-        
-        - name: code quality test
-          shell: pwsh
-          run: |
-            ./tests/codecheck.ps1
+jobs:
+  build-and-deploy:
+    runs-on: windows-2019
+    if: "!contains(github.event.head_commit.message, 'ci-skip')"
+    steps:
+      - name: checkout 🛎️
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: pre-build
+        shell: pwsh
+        run: |
+          Install-Module -Name Pester -MaximumVersion 4.10.1 -Verbose -Scope CurrentUser -SkipPublisherCheck -Force
+          Install-Module PSScriptAnalyzer -Scope CurrentUser -SkipPublisherCheck -ErrorAction SilentlyContinue -Force
+          Install-Module 7zip4PowerShell -Scope CurrentUser -SkipPublisherCheck -ErrorAction SIlentlyContinue -Force
+
+      - name: build
+        shell: pwsh
+        run: |
+          ./build.ps1
+
+      - name: code quality test
+        shell: pwsh
+        run: |
+          ./tests/codecheck.ps1
