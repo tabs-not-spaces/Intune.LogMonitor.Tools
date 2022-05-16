@@ -35,7 +35,10 @@ jobs:
         run: |
           ./tests/codecheck.ps1
           
-      - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action/composite@v1
+      - name: publish test results
+        uses: dorny/test-reporter@0d00bb14cb0cc2c9b8985df6e81dd333188224e1
         with:
-          files: .tests\pester.codecheck.test.xml
+          name: Code Quality Test
+          path: .tests\pester.codecheck.test.xml
+          
+      
