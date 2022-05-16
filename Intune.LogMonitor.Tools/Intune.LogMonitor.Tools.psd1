@@ -18,7 +18,7 @@ ModuleVersion = '0.0.1'
 # CompatiblePSEditions = @()
 
 # ID used to uniquely identify this module
-GUID = '5312f90d-4991-4a5e-8aea-b6044e0dc3a7'
+GUID = 'b9c069a3-e219-4a84-a96b-7c3da50e854b'
 
 # Author of this module
 Author = 'Ben Reader'
@@ -51,7 +51,9 @@ Copyright = '(c) BenReader. All rights reserved.'
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-# RequiredModules = @()
+ RequiredModules = @(
+    '7zip4PowerShell'
+)
 
 # Assemblies that must be loaded prior to importing this module
 # RequiredAssemblies = @()
@@ -101,7 +103,7 @@ PrivateData = @{
         # LicenseUri = ''
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        ProjectUri = 'https://github.com/tabs-not-spaces/Intune.LogMonitor.Tools'
 
         # A URL to an icon representing this module.
         # IconUri = ''
