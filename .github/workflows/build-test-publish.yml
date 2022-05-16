@@ -35,21 +35,19 @@ jobs:
         run: |
           ./tests/codecheck.ps1
           
-      - name: test module
-        id: test_module
-        uses: zyborg/pester-tests-report@v1
+      - name: Publish artifact
+        uses: actions/upload-artifact@v3
         with:
-          include_paths: .tests
-          exclude_tags: skip_ci
-          report_name: module_tests
-          report_title: My Module Tests
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          name: release
+          path: ./bin/release/*
           
-      - name: dump test results
-        shell: pwsh
-        run: |
-          Write-Host 'Total Tests Executed...:  ${{ steps.test_module.outputs.total_count }}'
-          Write-Host 'Total Tests PASSED.....:  ${{ steps.test_module.outputs.passed_count }}'
-          Write-Host 'Total Tests FAILED.....:  ${{ steps.test_module.outputs.failed_count }}'
+      - name: Publish PowerShell Module
+        # You may pin to the exact commit or the version.
+        uses: pcgeek86/publish-powershell-module-action@2a7837ce0746ea58c40574d8d6cbc6c44238edb7
+        with:
+          # The filesystem path to the module to import into the environment.
+          modulePath: ./bin/release/*
+          # The NuGet API Key for PowerShell Gallery, with permission to push this module.
+          NuGetApiKey: ${{ secrets.APIKEY }}
           
       
