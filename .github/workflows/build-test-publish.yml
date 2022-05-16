@@ -34,3 +34,8 @@ jobs:
         shell: pwsh
         run: |
           ./tests/codecheck.ps1
+          
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action/composite@v1
+        with:
+          files: .tests\pester.codecheck.test.xml
