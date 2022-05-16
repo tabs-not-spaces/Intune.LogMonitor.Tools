@@ -24,7 +24,7 @@ stages:
               script: |
                 Install-Module -Name Pester -MaximumVersion 4.10.1 -Verbose -Scope CurrentUser -SkipPublisherCheck -Force
                 Install-Module PSScriptAnalyzer -Scope CurrentUser -SkipPublisherCheck -ErrorAction SilentlyContinue -Force
-                Install-Module   -Scope CurrentUser -SkipPublisherCheck -ErrorAction SIlentlyContinue -Force
+                Install-Module 7zip4PowerShell -Scope CurrentUser -SkipPublisherCheck -ErrorAction SIlentlyContinue -Force
               pwsh: true
 
           - task: PowerShell@2
